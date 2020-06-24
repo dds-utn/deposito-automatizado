@@ -1,2 +1,4 @@
-# deposito-automatizado
-Dominio resuelto con patrones Command, Observer, Builder y Adapter. Comunicaciones por MQTT
+# Depósito Automatizado
+
+![Enunciado](Enunciado.png)
+![Propuesta de solución](Diagrama_de_clases.png)
