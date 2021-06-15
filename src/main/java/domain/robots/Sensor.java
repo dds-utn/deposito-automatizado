@@ -1,5 +1,6 @@
 package domain.robots;
 
+import domain.tracer.Tracer;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
@@ -13,7 +14,7 @@ public class Sensor implements IMqttMessageListener {
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         Double proximidadAObjetoEnCM = new Double(message.toString());
-        //System.out.println(proximidadAObjetoEnCM);
+        Tracer.getInstance().showTrace(proximidadAObjetoEnCM.toString());
         this.robot.setProximidadAObjetoEnCM(proximidadAObjetoEnCM);
     }
 }

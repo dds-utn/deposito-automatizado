@@ -2,7 +2,7 @@ package domain.comandos;
 
 import domain.robots.AdapterComunicadorRobot;
 
-public class ComandoRobotBuilder<T extends ComandoRobot>{
+public class ComandoRobotBuilder<T extends ComandoRobot> {
     protected T comando;
 
     public ComandoRobotBuilder(Class<T> clase) {

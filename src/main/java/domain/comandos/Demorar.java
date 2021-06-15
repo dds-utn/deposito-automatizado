@@ -2,7 +2,7 @@ package domain.comandos;
 
 import java.util.concurrent.TimeUnit;
 
-public class Demorar implements Comando{
+public class Demorar implements Comando {
     private Double segundos;
 
     public Demorar(Double segundos) {

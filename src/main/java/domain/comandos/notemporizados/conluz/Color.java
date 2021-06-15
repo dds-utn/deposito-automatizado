@@ -1,4 +1,4 @@
-package domain.comandos.notemporizados;
+package domain.comandos.notemporizados.conluz;
 
 public enum Color {
     ROJO,

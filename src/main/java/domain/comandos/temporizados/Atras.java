@@ -2,7 +2,7 @@ package domain.comandos.temporizados;
 
 import domain.tracer.Tracer;
 
-public class Atras extends ComandoConTiempo{
+public class Atras extends ComandoConTiempo {
 
     @Override
     public void ejecutar() {

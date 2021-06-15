@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Robot implements Medible{
+public class Robot implements Medible {
     private String nombre;
     private List<Comando> comandos;
     private List<IObserver> observers;

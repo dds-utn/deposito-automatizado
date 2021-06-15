@@ -1,6 +1,6 @@
 package domain.robots;
 
-import domain.comandos.notemporizados.Color;
+import domain.comandos.notemporizados.conluz.Color;
 
 public interface AdapterComunicadorRobot {
     public void apagarLuz(Color color);
@@ -10,4 +10,5 @@ public interface AdapterComunicadorRobot {
     public void izquierda(Integer segundos);
     public void derecha(Integer segundos);
     public void tocarBocina(Integer segundos);
+    public void mostrarFrase(String frase);
 }

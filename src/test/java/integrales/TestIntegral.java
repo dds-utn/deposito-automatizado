@@ -3,7 +3,12 @@ package integrales;
 import domain.comandos.Comando;
 import domain.comandos.ComandoRobot;
 import domain.comandos.Demorar;
-import domain.comandos.notemporizados.*;
+import domain.comandos.notemporizados.ComandoFraseBuilder;
+import domain.comandos.notemporizados.MostrarFrase;
+import domain.comandos.notemporizados.conluz.ApagarLuz;
+import domain.comandos.notemporizados.conluz.Color;
+import domain.comandos.notemporizados.conluz.ComandoConLuzBuilder;
+import domain.comandos.notemporizados.conluz.EncenderLuz;
 import domain.comandos.temporizados.*;
 import domain.mqtt.ClienteMQTT;
 import domain.mqtt.ClienteMQTTBuilder;
@@ -21,12 +26,12 @@ public class TestIntegral {
 
     public static void main(String[] args) throws MqttException {
         ClienteMQTT clienteMQTT = new ClienteMQTTBuilder()
-                .conIPDestino("test.mosquitto.org")
+                .conIPDestino("broker.hivemq.com")
                 .conPuertoDestino(1883)
                 .construir();
 
         ClienteMQTT clienteMQTT2 = new ClienteMQTTBuilder()
-                .conIPDestino("test.mosquitto.org")
+                .conIPDestino("broker.hivemq.com")
                 .conPuertoDestino(1883)
                 .construir();
 
@@ -36,7 +41,7 @@ public class TestIntegral {
         AdapterComunicadorRobot adapter = new AdapterMQTTComunicadorRobot(publisher);
         Sensor sensorProximidad = new Sensor();
         Robot robotin = new Robot("Robotin", sensorProximidad);
-        subscriber.suscribir("robot/distancia", sensorProximidad);
+        subscriber.suscribir(AdapterMQTTComunicadorRobot.getBaseTopic() + "distancia", sensorProximidad);
 
         ComandoTemporizadoBuilder<Adelante> builder = new ComandoTemporizadoBuilder<>(Adelante.class);
         ComandoRobot comandoAdelante = builder
@@ -51,12 +56,12 @@ public class TestIntegral {
 
         ComandoRobot comandoDerecha = new ComandoTemporizadoBuilder<>(Derecha.class)
                 .conReceptor(adapter)
-                .conSegundos(3)
+                .conSegundos(1)
                 .construir();
 
         ComandoRobot comandoIzquierda = new ComandoTemporizadoBuilder<>(Izquierda.class)
                 .conReceptor(adapter)
-                .conSegundos(3)
+                .conSegundos(1)
                 .construir();
 
         ComandoRobot comandoEncenderLuzRoja = new ComandoConLuzBuilder<>(EncenderLuz.class)
@@ -80,35 +85,49 @@ public class TestIntegral {
 
         ComandoRobot comandoTocarBocina = new ComandoTemporizadoBuilder<>(TocarBocina.class)
                 .conReceptor(adapter)
-                .conSegundos(3)
+                .conSegundos(1)
                 .construir();
 
-        Comando demorar = new Demorar(3.0);
+        ComandoRobot comandoMostrarFrase = new ComandoFraseBuilder(MostrarFrase.class)
+                .conReceptor(adapter)
+                .conFrase(" EJ. COMANDOS")
+                .construir();
+
+        Comando demorar = new Demorar(4.0);
+
+        ComandoRobot comandoAtrasCorto = new ComandoTemporizadoBuilder<>(Atras.class)
+                .conReceptor(adapter)
+                .conSegundos(1)
+                .construir();
+
+        ComandoRobot mostrarLeyendaObstaculo = new ComandoFraseBuilder(MostrarFrase.class)
+                .conReceptor(adapter)
+                .conFrase("PELIGRO COLISION")
+                .construir();
 
         Regla alejarSiSeAcercaAlgo = new Regla(new CondicionMenor(), 10.0);
-        alejarSiSeAcercaAlgo.agregarAccion(comandoAtras);
+        alejarSiSeAcercaAlgo.agregarAccion(comandoAtrasCorto, mostrarLeyendaObstaculo, comandoEncenderLuzRoja);
         robotin.agregarObservers(alejarSiSeAcercaAlgo);
 
         robotin.encolaComando(
-                comandoApagarLuz,
+                comandoTocarBocina,
+                comandoMostrarFrase,
                 comandoEncenderLuzRoja,
                 demorar,
                 comandoEncenderLuzAmarilla,
                 demorar,
-                comandoApagarLuz,
                 comandoEncenderLuzVerde,
-                demorar,
-                comandoTocarBocina,
-                comandoAdelante,
+                comandoApagarLuz,
+                comandoAtras,
                 demorar,
                 comandoIzquierda,
                 demorar,
-                comandoAtras,
-                demorar,
                 comandoDerecha,
-                comandoApagarLuz
+                demorar,
+                comandoAdelante,
+                demorar
         );
         robotin.ejecutaComandos();
-        publisher.getCliente().desconectarYCerrar();
+       // publisher.getCliente().desconectarYCerrar();
     }
 }
